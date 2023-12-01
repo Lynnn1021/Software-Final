@@ -95,3 +95,126 @@ class MyLinkedList<T> implements Query<T> {
         return this;
     }
 }
+public class App {
+    public static void main(String[] args) throws Exception {
+        System.out.println("Hello, World!");
+        Query<Integer> list = new MyLinkedList<Integer>();
+        list.add(2);
+        System.out.println("Found " + list.search(2));
+        list.delete(2);
+        System.out.println("Found " + list.search(2));
+
+        list.add(2);
+        list.add(1);
+        list.add(3);
+        System.out.println("Found " + list.search(1));
+        System.out.println("Found " + list.search(2));
+
+        list.delete(2);
+        System.out.println("Found " + list.search(1));
+        System.out.println("Found " + list.search(2));
+    }
+}
+
+interface Query<T> {
+  SearchableNode<T> search(T value);
+  Query<T> add(T value);
+  Query<T> delete(T value);
+}
+
+abstract class SearchableNode<T> {
+    private T value;
+
+    public T getValue() {
+        return value;
+    }
+    
+    public void setValue(T value) {
+        this.value = value;
+    }
+}
+
+
+class LinkedListNode<T> extends SearchableNode<T> {
+    private LinkedListNode<T> next;
+    private LinkedListNode<T> prev;
+
+    @Override
+    public String toString() {
+        return "LinkedListNode[" + this.getValue() + "]";
+    }
+
+    public LinkedListNode<T> getNext() {
+        return next;
+    }
+
+    public void setNext(LinkedListNode<T> next) {
+        this.next = next;
+    }
+
+    public LinkedListNode<T> getPrev() {
+        return prev;
+    }
+
+    public void setPrev(LinkedListNode<T> prev) {
+        this.prev = prev;
+    }
+}
+
+class MyLinkedList<T> implements Query<T> {
+    private LinkedListNode<T> head = new LinkedListNode<T>();
+    private LinkedListNode<T> tail = new LinkedListNode<T>();
+
+    public MyLinkedList() {
+        head.setNext(tail);
+        tail.setPrev(head);
+    }
+
+    public SearchableNode<T> search(T value) {
+        // front to back
+        LinkedListNode<T> node = head.getNext();
+        while (node != tail) {
+            if (node.getValue().equals(value)) {
+                return node;
+            }
+            node = node.getNext();
+        }
+        return null;
+
+        // back to front
+        LinkedListNode<T> node = tail.getPrev();
+        while (node != head) {
+            if (node.getValue().equals(value)) {
+                return node;
+            }
+            node = node.getPrev();
+        }
+        return null;
+    }
+    
+    public Query<T> add(T value) {
+        LinkedListNode<T> node = new LinkedListNode<T>();
+        node.setValue(value);
+
+        node.setPrev(tail.getPrev());
+        node.setNext(tail);
+
+        tail.getPrev().setNext(node);
+        tail.setPrev(node);
+
+        return this;
+    }
+    
+    public Query<T> delete(T value) {
+        LinkedListNode<T> cur = head.getNext();
+        while (cur != tail) {
+            if (cur.getValue().equals(value)) {
+                cur.getPrev().setNext(cur.getNext());
+                cur.getNext().setPrev(cur.getPrev());
+                break;
+            }
+            cur = cur.getNext();
+        }
+        return this;
+    }
+}
