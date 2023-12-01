@@ -1,0 +1,109 @@
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Hello world");
+
+        BinarySearchTree<Integer> bst = new BinarySearchTree<Integer>();
+        bst.insert(5).insert(3).insert(7).insert(2).insert(4).insert(6).insert(8);
+
+        System.out.println("Found: " + bst.search(2));
+        System.out.println("Found: " + bst.search(8));
+        System.out.println("Found: " + bst.search(1));
+    }
+}
+
+class BinarySearchTree<T extends Comparable<T>> {
+    private BinarySearchTreeNode<T> root;
+
+    public BinarySearchTree<T> insert(T value) {
+        if (root == null) {
+            root = new BinarySearchTreeNode<T>();
+            root.setValue(value);
+        } else {
+            root.insert(value);
+        }
+        return this;
+    }
+
+    public BinarySearchTreeNode<T> search(T value) {
+        if (root == null) {
+            return null;
+        } else {
+            return root.search(value);
+        }
+    }
+}
+
+class BinarySearchTreeNode<T extends Comparable<T>> {
+    private T value;
+    private BinarySearchTreeNode<T> left;
+    private BinarySearchTreeNode<T> right;
+    
+    public String toString() {
+        return "BinarySearchTreeNode[value="+this.value+"]";
+    }
+
+    public BinarySearchTreeNode<T> search(T value) {
+        System.out.println("Searching current node: " + this.value);
+        if (this.value == value) {
+            return this;
+        } else if (this.value.compareTo(value) < 0) {
+            System.out.println("Going right");
+            if (right == null) {
+                return null;
+            } else {
+                return right.search(value);
+            }
+        } else {
+            System.out.println("Going left");
+            if (left == null) {
+                return null;
+            } else {
+                return left.search(value);
+            }
+        }
+    }
+
+    public BinarySearchTreeNode<T> insert(T value) {
+        if (this.value.compareTo(value) < 0) {
+            if (right == null) {
+                right = new BinarySearchTreeNode<T>();
+                right.setValue(value);
+                return right;
+            } else {
+                return right.insert(value);
+            }
+        } else {
+            if (left == null) {
+                left = new BinarySearchTreeNode<T>();
+                left.setValue(value);
+                return left;
+            } else {
+                return left.insert(value);
+            }
+        }
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public BinarySearchTreeNode<T> getLeft() {
+        return left;
+    }
+
+    public void setLeft(BinarySearchTreeNode<T> left) {
+        this.left = left;
+    }
+
+    public BinarySearchTreeNode<T> getRight() {
+        return right;
+    }
+
+    public void setRight(BinarySearchTreeNode<T> right) {
+        this.right = right;
+    }
+}
