@@ -1,0 +1,80 @@
+Array List
+public class App {
+    public static void main(String[] args) throws Exception {
+        System.out.println("Hello, World!");
+        MyArrayList<Integer> list = new MyArrayList<Integer>();
+        list.add(2);
+        list.add(1);
+        list.add(3);
+        System.out.println(list.search(1));
+        System.out.println(list.search(2));
+
+        list.delete(2);
+        System.out.println(list.search(1));
+        System.out.println(list.search(2));
+    }
+}
+
+interface Query<T> {
+  SearchableNode<T> search(T value);
+  Query<T> add(T value);
+  Query<T> delete(T value);
+}
+
+abstract class SearchableNode<T> {
+    private T value;
+
+    public T getValue() {
+        return value;
+    }
+    
+    public void setValue(T value) {
+        this.value = value;
+    }
+}
+
+
+class ArrayListNode<T> extends SearchableNode<T> {
+    @Override
+    public String toString() {
+        return "ArrayListNode[" + this.getValue() + "]";
+    }
+}
+
+class MyArrayList<T> implements Query<T> {
+    private ArrayListNode<T>[] data = new ArrayListNode[0];
+    
+    public SearchableNode<T> search(T value) {
+        for(ArrayListNode<T> cur: data) {
+            System.out.println("Searching " + cur.toString());
+            if (cur.getValue() == value)
+                return cur;
+        }
+        return null;
+    }
+    
+    public Query<T> add(T value) {
+        ArrayListNode<T>[] newData = new ArrayListNode[this.data.length+1];
+        for(int i = 0; i < data.length; i++) {
+            newData[i] = data[i];
+        }
+        ArrayListNode<T> newNode = new ArrayListNode<T>();
+        newNode.setValue(value);
+        newData[data.length] = newNode;
+        this.data = newData;
+        return this;
+    }
+    
+    public Query<T> delete(T value) {
+        ArrayListNode<T>[] newData = new ArrayListNode[this.data.length-1];
+        int idx = 0;
+        for(int i = 0; i < data.length; i++) {
+            if (data[i].getValue() != value) {
+                newData[idx] = data[i];
+                idx++;
+            }
+        }
+        this.data = newData;
+        return this;
+    }
+}
