@@ -1,0 +1,183 @@
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Comparator;
+
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Hello world");
+
+        Graph<Integer> graph = new Graph<Integer>();
+        GraphNode<Integer> node1 = graph.addNode(1);
+        GraphNode<Integer> node2 = graph.addNode(2);
+        GraphNode<Integer> node3 = graph.addNode(3);
+        GraphNode<Integer> node4 = graph.addNode(4);
+        GraphNode<Integer> node5 = graph.addNode(5);
+        GraphNode<Integer> node6 = graph.addNode(6);
+        GraphNode<Integer> node7 = graph.addNode(7);
+
+        graph.addEdge(node1, node2, 2);
+        graph.addEdge(node1, node3, 4);
+        graph.addEdge(node2, node4, 7);
+        graph.addEdge(node2, node6, 3);
+        graph.addEdge(node6, node7, 1);
+        graph.addEdge(node3, node4, 2);
+        graph.addEdge(node4, node5, 1);
+
+        System.out.println("Dijkstra:");
+        dijkstra(node1);
+    }
+
+    public static void dijkstra(GraphNode<Integer> node) {
+        node.setDistance(0);
+        Queue<GraphNode<Integer>> queue = new PriorityQueue<GraphNode<Integer>>(new Comparator<GraphNode<Integer>>() {
+            @Override
+            public int compare(GraphNode<Integer> o1, GraphNode<Integer> o2) {
+                return o1.getDistance() - o2.getDistance();
+            }
+        });
+        queue.add(node);
+        while (!queue.isEmpty()) {
+            GraphNode<Integer> cur = queue.remove();
+            System.out.println("Current node: " + cur);
+            if (cur.isVisited())
+                continue;
+            System.out.println("Visiting node: " + cur);
+            cur.setVisited(true);
+            for (GraphEdge<Integer> edge: cur.getEdges()) {
+                GraphNode<Integer> neighbour = edge.getTo();
+                int distance = cur.getDistance() + edge.getWeight();
+                if (distance < neighbour.getDistance()) {
+                    neighbour.setDistance(distance);
+                    neighbour.setPrevious(cur);
+                    queue.add(neighbour);
+                }
+            }
+        }
+    }
+}
+
+class GraphEdge<T> {
+    private GraphNode<T> from;
+    private GraphNode<T> to;
+    private int weight;
+
+    public GraphEdge(GraphNode<T> from, GraphNode<T> to, int weight) {
+        this.from = from;
+        this.to = to;
+        this.weight = weight;
+    }
+
+    public GraphNode<T> getFrom() {
+        return from;
+    }
+
+    public void setFrom(GraphNode<T> from) {
+        this.from = from;
+    }
+
+    public GraphNode<T> getTo() {
+        return to;
+    }
+
+    public void setTo(GraphNode<T> to) {
+        this.to = to;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+}
+
+class GraphNode<T> {
+    private T value;
+    private List<GraphEdge<T>> edges = new ArrayList<>();
+    private int distance = Integer.MAX_VALUE;
+    private GraphNode<T> previous; 
+    private boolean visited;
+
+    public GraphNode(T value) {
+        this.value = value;
+    }
+
+    public void addEdge(GraphEdge<T> edge) {
+        edges.add(edge);
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public List<GraphEdge<T>> getEdges() {
+        return edges;
+    }
+
+    public void setEdges(List<GraphEdge<T>> edges) {
+        this.edges = edges;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
+    public GraphNode<T> getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(GraphNode<T> previous) {
+        this.previous = previous;
+    }
+    
+    public boolean isVisited() {
+        return visited;
+    }
+    
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
+    public String toString() {
+        return "GraphNode[value=" + value + ", distance=" + this.getDistance() + ", prev=" + this.getPrevious() + "]";
+    }
+}
+
+class Graph<T> {
+    private List<GraphNode<T>> nodes = new ArrayList<GraphNode<T>>();
+
+    public GraphNode<T> addNode(T value) {
+        GraphNode<T> node = new GraphNode<T>(value);
+        nodes.add(node);
+        return node;
+    }
+
+    public void addEdge(GraphNode<T> node1, GraphNode<T> node2, int weight) {
+        // undirected graph
+        GraphEdge<T> edge1 = new GraphEdge<>(node1, node2, weight);
+        GraphEdge<T> edge2 = new GraphEdge<>(node2, node1, weight);
+        node1.addEdge(edge1);
+        node2.addEdge(edge2);
+    }
+
+    public List<GraphNode<T>> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<GraphNode<T>> nodes) {
+        this.nodes = nodes;
+    }
+}
