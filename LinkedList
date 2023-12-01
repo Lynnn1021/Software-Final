@@ -1,0 +1,97 @@
+LinkedList
+public class App {
+    public static void main(String[] args) throws Exception {
+        System.out.println("Hello, World!");
+        Query<Integer> list = new MyLinkedList<Integer>();
+        list.add(2);
+        System.out.println("Found " + list.search(2));
+        list.delete(2);
+        System.out.println("Found " + list.search(2));
+
+        list.add(2);
+        list.add(1);
+        list.add(3);
+        System.out.println("Found " + list.search(1));
+        System.out.println("Found " + list.search(2));
+
+        list.delete(2);
+        System.out.println("Found " + list.search(1));
+        System.out.println("Found " + list.search(2));
+    }
+}
+
+interface Query<T> {
+  SearchableNode<T> search(T value);
+  Query<T> add(T value);
+  Query<T> delete(T value);
+}
+
+abstract class SearchableNode<T> {
+    private T value;
+
+    public T getValue() {
+        return value;
+    }
+    
+    public void setValue(T value) {
+        this.value = value;
+    }
+}
+
+
+class LinkedListNode<T> extends SearchableNode<T> {
+    private LinkedListNode<T> next;
+
+    @Override
+    public String toString() {
+        return "LinkedListNode[" + this.getValue() + "]";
+    }
+
+    public LinkedListNode<T> getNext() {
+        return next;
+    }
+
+    public void setNext(LinkedListNode<T> next) {
+        this.next = next;
+    }
+}
+
+class MyLinkedList<T> implements Query<T> {
+    private LinkedListNode<T> head = new LinkedListNode<T>();
+    private LinkedListNode<T> tail = head;
+
+    public SearchableNode<T> search(T value) {
+        LinkedListNode<T> node = head;
+        while (node != null) {
+            System.out.println("Searching " + node.toString());
+            if (node.getValue() == value) {
+                return node;
+            }
+            node = node.getNext();
+        }
+        return null;
+    }
+    
+    public Query<T> add(T value) {
+        LinkedListNode<T> node = new LinkedListNode<T>();
+        node.setValue(value);
+        tail.setNext(node);
+        tail = node;
+        return this;
+    }
+    
+    public Query<T> delete(T value) {
+        LinkedListNode<T> cur = head;
+        while (cur != null) {
+            LinkedListNode<T> next = cur.getNext();
+            if (next != null && next.getValue() == value) {
+                cur.setNext(next.getNext());
+            }
+            if (next == tail) {
+                tail = cur;
+            }
+            cur = cur.getNext();
+        }
+        return this;
+    }
+}
