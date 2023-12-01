@@ -54,3 +54,61 @@ class MyStack<T> implements StackInterface<T> {
         return null;
     }
 }
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Hello world");
+
+        MyStack<Integer> stack = new MyStack<Integer>(10);
+
+        stack.push(1).push(2).push(3);
+
+        System.out.println("Popped: " + stack.pop());
+        System.out.println("Popped: " + stack.pop());
+
+        stack.push(4);
+
+        System.out.println("Popped: " + stack.pop());
+        System.out.println("Popped: " + stack.pop());
+
+        System.out.println("Popped: " + stack.pop());
+    }
+}
+
+interface StackInterface<T> {
+    StackInterface<T> push(T value);
+    T pop();
+}
+
+class MyStack<T> implements StackInterface<T> {
+    private T[] stackArray;
+    private int top;
+    private int capacity;
+
+    public MyStack(int size) {
+        capacity = size;
+        stackArray = (T[]) new Object[capacity];
+        top = -1;
+    }
+
+    public StackInterface<T> push(T value) {
+        if (top < capacity - 1) {
+            top++;
+            stackArray[top] = value;
+            return this;
+        } else {
+            System.out.println("Stack Overflow");
+            return this;
+        }
+    }
+
+    public T pop() {
+        if (top >= 0) {
+            T value = stackArray[top];
+            top--;
+            return value;
+        } else {
+            System.out.println("Stack Underflow");
+            return null;
+        }
+    }
+}
