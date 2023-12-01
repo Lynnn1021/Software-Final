@@ -1,0 +1,56 @@
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Hello world");
+
+        MyStack<Integer> stack = new MyStack<Integer>();
+
+        stack.push(1).push(2).push(3);
+
+        System.out.println("Popped: " + stack.pop());
+        System.out.println("Popped: " + stack.pop());
+
+        stack.push(4);
+
+        System.out.println("Popped: " + stack.pop());
+        System.out.println("Popped: " + stack.pop());
+
+        System.out.println("Popped: " + stack.pop());
+    }
+}
+
+interface StackInterface<T> {
+    StackInterface<T> push(T value);
+    T pop();
+}
+class MyStack<T> implements StackInterface<T> {
+    private LinkedListNode<T> head = new LinkedListNode<T>();
+    private LinkedListNode<T> tail = new LinkedListNode<T>();
+
+    public MyStack() {
+        head.setNext(tail);
+        tail.setPrev(head);
+    }
+
+    public StackInterface<T> push(T value) {
+        LinkedListNode<T> node = new LinkedListNode<T>();
+        node.setValue(value);
+
+        node.setPrev(tail.getPrev());
+        node.setNext(tail);
+
+        tail.getPrev().setNext(node);
+        tail.setPrev(node);
+
+        return this;
+    }
+    
+    public T pop() {
+        if (tail.getPrev() != head) {
+            LinkedListNode<T> node = tail.getPrev();
+            node.getPrev().setNext(tail);
+            tail.setPrev(node.getPrev());
+            return node.getValue();
+        }
+        return null;
+    }
+}
