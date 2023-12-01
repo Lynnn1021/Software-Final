@@ -1,0 +1,96 @@
+import java.util.List;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Hello world");
+
+        Graph<Integer> graph = new Graph<Integer>();
+        GraphNode<Integer> node1 = graph.addNode(1);
+        GraphNode<Integer> node2 = graph.addNode(2);
+        GraphNode<Integer> node3 = graph.addNode(3);
+        GraphNode<Integer> node4 = graph.addNode(4);
+        GraphNode<Integer> node5 = graph.addNode(5);
+        GraphNode<Integer> node6 = graph.addNode(6);
+        GraphNode<Integer> node7 = graph.addNode(7);
+
+        graph.addEdge(node1, node2);
+        graph.addEdge(node1, node3);
+        graph.addEdge(node2, node4);
+        graph.addEdge(node2, node6);
+        graph.addEdge(node6, node7);
+        graph.addEdge(node3, node4);
+        graph.addEdge(node4, node5);
+
+        System.out.println("DFS:");
+        dfs(node1, new HashSet<GraphNode<Integer>>());
+    }
+
+    public static void dfs(GraphNode<Integer> node, Set<GraphNode<Integer>> visited) {
+        System.out.println("Visiting node: " + node);
+        visited.add(node);
+        for (GraphNode<Integer> neighbour: node.getNeighbours()) {
+            if (!visited.contains(neighbour)) {
+                dfs(neighbour, visited);
+            }
+        }
+    }
+}
+
+class GraphNode<T> {
+    private T value;
+    private List<GraphNode<T>> neighbours = new ArrayList<GraphNode<T>>();
+
+    public GraphNode(T value) {
+        this.value = value;
+    }
+
+    public void addNeighbour(GraphNode<T> node) {
+        neighbours.add(node);
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public List<GraphNode<T>> getNeighbours() {
+        return neighbours;
+    }
+
+    public void setNeighbours(List<GraphNode<T>> neighbours) {
+        this.neighbours = neighbours;
+    }
+
+    public String toString() {
+        return "GraphNode[value=" + value + "]";
+    }
+}
+
+class Graph<T> {
+    private List<GraphNode<T>> nodes = new ArrayList<GraphNode<T>>();
+
+    public GraphNode<T> addNode(T value) {
+        GraphNode<T> node = new GraphNode<T>(value);
+        nodes.add(node);
+        return node;
+    }
+
+    public void addEdge(GraphNode<T> node1, GraphNode<T> node2) {
+        node1.addNeighbour(node2);
+        node2.addNeighbour(node1);
+    }
+
+    public List<GraphNode<T>> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<GraphNode<T>> nodes) {
+        this.nodes = nodes;
+    }
+}
